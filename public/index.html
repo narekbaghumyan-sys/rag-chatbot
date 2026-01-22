@@ -1,0 +1,497 @@
+<!DOCTYPE html>    
+<html lang="ru">    
+<head>    
+<meta charset="UTF-8">    
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">    
+<title>CHATGPT+</title>    
+    
+<style>    
+*{    
+  margin:0;    
+  padding:0;    
+  box-sizing:border-box;    
+  font-family:Inter,Segoe UI,sans-serif;    
+}    
+    
+/* ===== THEMES ===== */    
+:root{    
+  --bg-main:linear-gradient(135deg,#f8fafc,#e0e7ff);    
+  --glass:rgba(255,255,255,.65);    
+  --border:rgba(255,255,255,.45);    
+  --text:#0f172a;    
+  --accent:#6366f1;    
+  --accent2:#8b5cf6;    
+}    
+    
+body.dark{    
+  background:#262626;    
+  color:#e5e7eb;    
+}    
+    
+body{    
+  background:#FFFFFF;    
+  color:#0f172a;    
+  overflow:hidden;    
+  font-family:Inter,Segoe UI,sans-serif;   
+  
+}    
+    
+    
+    
+@keyframes nebulaMove{    
+  0%{transform:translate(0,0);}    
+  50%{transform:translate(30px,15px);}    
+  100%{transform:translate(0,0);}    
+}    
+    
+    
+/* ===== LAYOUT ===== */    
+.app{    
+  display:flex;    
+  height:100vh;    
+}    
+
+  
+.main{    
+  flex:1;    
+  display:flex;    
+  flex-direction:column;    
+  height:100%;    
+}    
+    
+/* ===== SIDEBAR ===== */    
+.sidebar{    
+  width:280px;    
+  padding:16px;    
+  display:flex;    
+  flex-direction:column;    
+  background:#F2F2F2;    
+  border-radius:12px;    
+}    
+body.dark .sidebar{
+  background:#202123; /* sidebar մուգ երանգ */
+}
+.chat-history{    
+  flex:1;    
+  overflow-y:auto;    
+  margin-top:12px;    
+  padding:8px;    
+  border-radius:12px;    
+}    
+    
+.chat-item{    
+  padding:14px;    
+  border-radius:16px;    
+  margin-bottom:10px;    
+  cursor:pointer;    
+  border:none;      
+  color:#000000;            /* ⬅️ եզրագիծը հանված */    
+}    
+.chat-item:hover{    
+  background:rgba(0,0,0,.06);    
+}    
+body.dark .chat-item:hover{    
+  background:rgba(255,255,255,.08);    
+}    
+body.dark .chat-item{    
+    border:none;    
+    color:#FFFFFF;    
+}    
+.glass{    
+  background:inherit;    
+}    
+    
+    
+.header{    
+  padding:16px 20px;     
+  display:flex;    
+  justify-content:space-between;    
+  align-items:center;    
+  font-weight:600;    
+  background:#FFFFFF;    
+  border-bottom:none;   
+}    
+body.dark .header{    
+  background:#262626;    
+}    
+.divider{    
+  height:1px;    
+  background:#D9D9D9;    
+  margin:0 16px;    
+}    
+    
+/* SWITCH */    
+.switch{    
+  width:48px;height:26px;    
+  border-radius:20px;    
+  background:rgba(0,0,0,0.1);    
+  position:relative;    
+  cursor:pointer;    
+}    
+.switch::before{    
+  content:"☀️";    
+  position:absolute;    
+  top:2px;left:2px;    
+  width:22px;height:22px;    
+  border-radius:50%;    
+  background:white;    
+  display:flex;    
+  align-items:center;    
+  justify-content:center;    
+  transition:.35s;    
+}    
+body.dark .switch::before{    
+  transform:translateX(22px);    
+  content:"🌙";    
+  background:#262626;  
+}    
+body.dark .divider{    
+  background:#3a3a3a;    
+}    
+    
+/* Մութ թեմա */    
+body.dark textarea {    
+  background:none;    
+  color:#ffffff;    
+  border:none;    
+}    
+.ai {    
+  background:none;    
+  color:#000000;    
+  border:none;    
+}    
+    
+body.dark .ai {    
+  background:none;  /* ճիշտ մութ թեմայի ֆոն */    
+  color:#ffffff;    
+  border:none;    
+}    
+    
+.user{    
+  margin-left:auto;    
+  background:#F2F2F2;    
+  color:#000000;    
+  border:1px solid #D9D9D9;    
+}    
+body.dark .user{    
+  background:#454545;    
+  color:#ffffff;    
+  border:1px solid #434343;    
+}    
+/* CHAT */    
+.chat{    
+  flex:1;    
+   padding:20px;   
+   overflow-y:auto;    
+  -webkit-overflow-scrolling:touch;   
+}    
+    
+.message{    
+  max-width:70%;    
+  padding:14px 18px;    
+  margin-bottom:14px;    
+  border-radius:12px;    
+  line-height:1.4;    
+  font-size:15px;    
+  word-wrap: break-word;    
+  border:1px solid #D9D9D9;    
+  background:#F2F2F2;    
+  color:#000000;    
+}    
+    
+    
+.ai{    
+  margin-right:auto;    
+}    
+/* INPUT */    
+.input {    
+  display:flex;    
+  gap:10px;    
+  border-top:1px solid #D9D9D9;    
+  background:inherit; /* ստացվի թեմայի ֆոնին համապատասխան */    
+  border-radius:0 0 12px 12px;    
+  align-items:center; /* textarea-ը կենտրոնանում է vertical */    
+}    
+ /* Default (light mode) */
+textarea {
+  flex: 0.5;          /* երկու անգամ փոքր լայնք */
+  resize: none;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid #D9D9D9;
+  outline: none;
+  background: #FFFFFF;
+  color: #000000;
+  font-size: 15px;
+  line-height: 1.4;
+
+  min-height: 120px;  /* մի քիչ ավելի մեծ բարձրություն */
+  max-height: 220px;  /* եթե պետք է աճի, բայց սահմանափակ */
+  overflow-y: auto;
+}
+  
+ button{    
+  width:36px;    
+  height:36px;    
+  border-radius:50%;    
+  border:1px solid #000000;    
+  background:#000000;    
+  color:#ffffff;    
+  font-size:16px;    
+  cursor:pointer;    
+  transition:.25s;    
+}    
+button:hover{    
+  transform:scale(1.05);    
+}    
+body.dark button {    
+  background:#ffffff; /* տիրույթը սպիտակ */    
+  color:#000000;      /* նշանը սև */    
+  border:1px solid #000000;    
+}    
+    
+/* MOBILE */    
+@media(max-width:768px){    
+  .sidebar{display:none}    
+}    
+    
+button:active{    
+  transform:scale(0.95);    
+}    
+.sidebar, .main, .chat, .input, .header {    
+  background:inherit;    
+}    
+    
+    
+ .send-btn {
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#000000;
+  border:none;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  cursor:pointer;
+  transition:0.2s ease;
+}
+
+.send-btn svg {
+  width:18px;
+  height:18px;
+  fill:white;
+  transform:translateY(-1px); /* ChatGPT-style center */
+}
+
+.send-btn:hover {
+  transform:scale(1.05);
+}
+
+.send-btn:active {
+  transform:scale(0.95);
+}
+
+/* DARK MODE */
+body.dark .send-btn {
+  background:#ffffff;
+}
+
+body.dark .send-btn svg {
+  fill:#000000;
+}   
+  .chat-item{
+  margin-top:50px;
+}
+
+/* === CHATGPT LOGO IMAGE === */
+.header{
+  position:relative;
+}
+
+.chatgpt-icon{
+  position:fixed;        /* ⬅️ ոչ absolute */
+  top:16px;              /* վերևի անկյուն */
+  left:16px;             /* ձախի անկյուն */
+  height:28px;
+  width:auto;
+  pointer-events:none;
+  user-select:none;
+  z-index:1000;          /* միշտ վերևում */
+  opacity:0.9;
+}
+
+/* THEME CHANGE ANIMATION */
+.chatgpt-icon.animate{
+  opacity:0;
+  transform:translateY(-50%) rotate(180deg) scale(0.7);
+}
+body.dark .chatgpt-icon{
+  filter:
+    invert(1)
+    brightness(1.4)
+    contrast(1.3)
+    drop-shadow(0 0 2px rgba(255,255,255,0.4));
+}
+.input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  max-width: 650px;
+  margin: 0 auto;              /* կենտրոնում */
+  padding: 8px 12px;
+
+  border-radius: 999px;        /* երկար օվալ */
+  border: 1px solid #D9D9D9;
+  background: #fff;
+}
+
+
+#input {
+  flex: 1;
+  resize: none;
+  border: none;
+  outline: none;
+
+  padding: 10px 12px;
+  font-size: 15px;
+  line-height: 1.4;
+  background: transparent;
+  color: #000;
+
+  height: 40px;        /* սկզբում 1 տող */
+  min-height: 40px;
+  max-height: 160px;   /* սահմանափակում */
+  overflow-y: hidden; /* JS-ը կկառավարի */
+}
+
+ 
+</style>    
+</head>    
+    
+<body>    
+<div id="background-effects"></div>    
+<div class="app">    
+    
+  <div class="sidebar glass">    
+    <div class="chat-item"> New Chat</div>    
+    <div class="chat-history"></div>    
+  </div>    
+    
+  <div class="main">    
+    <div class="header glass">    
+      CHATGPT+ 
+      
+      <img
+    class="chatgpt-icon"
+    src="https://logos-world.net/wp-content/uploads/2023/02/ChatGPT-Logo.png"
+    alt="ChatGPT logo"
+  >
+      
+      
+      <div class="switch" onclick="toggleTheme()"></div>    
+    </div>    
+    
+    
+     
+    <div class="chat" id="chat"></div>   
+    
+    
+    <div class="input glass">    
+      <textarea id="input" rows="1" placeholder="Message..."></textarea>    
+      <button onclick="send()" class="send-btn">
+  <svg viewBox="0 0 24 24">
+    <path d="M12 4l6.5 6.5-1.4 1.4L13 7.8V20h-2V7.8L6.9 11.9 5.5 10.5 12 4z"/>
+  </svg>
+</button>   
+    </div>    
+  </div>    
+    
+</div>    
+    
+<script>    
+
+const chat = document.getElementById("chat");
+const input = document.getElementById("input");
+
+function toggleTheme(){
+  document.body.classList.toggle("dark");
+  localStorage.setItem("theme", document.body.classList.contains("dark"));
+}
+
+if(localStorage.getItem("theme")==="true"){
+  document.body.classList.add("dark");
+}
+
+function autoResize(){
+  input.style.height="auto";
+  input.style.height=Math.min(input.scrollHeight,150)+"px";
+}
+input.addEventListener("input", autoResize);
+
+function scrollToBottom(){
+  chat.scrollTop = chat.scrollHeight;
+}
+
+function add(text, type){
+  const m = document.createElement("div");
+  m.className = "message " + type;
+  m.textContent = text;
+  chat.appendChild(m);
+  scrollToBottom();
+  return m;
+}
+
+async function send(){
+  const text = input.value.trim();
+  if(!text) return;
+
+  add(text, "user");
+  input.value = "";
+  autoResize();
+
+  // typing indicator
+  const typingBubble = add("Typing…", "ai");
+
+  try {
+    const res = await fetch("/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text })
+    });
+
+    const data = await res.json();
+    typingBubble.textContent = data.text || "No response";
+  } catch (err) {
+    typingBubble.textContent = "⚠️ Error connecting to server";
+  }
+
+  save();
+}
+
+const newChatBtn = document.querySelector(".chat-item");
+newChatBtn.addEventListener("click", ()=>{
+  chat.innerHTML = "";
+  localStorage.removeItem("chat");
+});
+
+function save(){
+  localStorage.setItem("chat", chat.innerHTML);
+}
+
+if(localStorage.getItem("chat")){
+  chat.innerHTML = localStorage.getItem("chat");
+}
+const textarea = document.getElementById("input");
+
+textarea.addEventListener("input", () => {
+  textarea.style.height = "auto";                 // reset
+  textarea.style.height = textarea.scrollHeight + "px";
+});
+
+</script>
+
+</script>    
+    
+</body>    
+</html>
