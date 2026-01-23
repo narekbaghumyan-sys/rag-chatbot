@@ -16,7 +16,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 SYSTEM_PROMPT_ONE = {
     "role": "system",
     "content": (
-        "Keep it short, 5 sentences non_nagotiable."
+        "Keep it short, 10 sentences non_nagotiable."
         "Use simple vocabulary."
         "You are an expert on all things related to programming."
         "You have deep knowledge of programming languages, eartquakes, floods, global warming, general knowledgr of geography, politics, "

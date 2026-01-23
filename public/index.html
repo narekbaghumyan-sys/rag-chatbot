@@ -214,7 +214,7 @@ body.dark .user{
 }    
  /* Default (light mode) */
 textarea {
-  flex: 0.5;          /* երկու անգամ փոքր լայնք */
+  flex: 1;          /* երկու անգամ փոքր լայնք */
   resize: none;
   padding: 14px 16px;
   border-radius: 12px;
@@ -225,7 +225,7 @@ textarea {
   font-size: 15px;
   line-height: 1.4;
 
-  min-height: 120px;  /* մի քիչ ավելի մեծ բարձրություն */
+  min-height: 140px;  /* մի քիչ ավելի մեծ բարձրություն */
   max-height: 220px;  /* եթե պետք է աճի, բայց սահմանափակ */
   overflow-y: auto;
 }
@@ -337,14 +337,16 @@ body.dark .chatgpt-icon{
   align-items: center;
   gap: 8px;
 
-  max-width: 650px;
-  margin: 0 auto;              /* կենտրոնում */
-  padding: 8px 12px;
+  width: 100%;
+  max-width: 820px;     /* 👈 մի քիչ փոքր, հարմար */
+  margin: 0 auto;
 
-  border-radius: 999px;        /* երկար օվալ */
+  padding: 8px 12px;
+  border-radius: 999px;
   border: 1px solid #D9D9D9;
   background: #fff;
 }
+
 
 
 #input {
@@ -363,6 +365,10 @@ body.dark .chatgpt-icon{
   min-height: 40px;
   max-height: 160px;   /* սահմանափակում */
   overflow-y: hidden; /* JS-ը կկառավարի */
+}
+body.dark .input {
+  background: #202123;
+  border-color: #333;
 }
 
  
